@@ -81,16 +81,20 @@ void fillPhoneNumbers(std::vector<int>& v)
 // http://stackoverflow.com/a/2384119
 void setBitAt(char* buf, int bufByteSize, int bitPosition, bool value)
 {
-   if (bitPosition < SIZEOF_CHAR*8*bufByteSize)
-   {
-      int byteOffset= bitPosition/8;
-      int bitOffset = bitPosition - byteOffset*8;
+   if (value)
+      buf[bitPosition>>3] |=  (1<<(bitPosition & 0x7));
+   else
+      buf[bitPosition>>3] &= ~(1<<(bitPosition & 0x7));
+   // if (bitPosition < SIZEOF_CHAR*8*bufByteSize)
+   // {
+   //    int byteOffset= bitPosition/8;
+   //    int bitOffset = bitPosition - byteOffset*8;
 
-      if (value)
-         buf[byteOffset] |=  (1 << bitOffset);
-      else
-         buf[byteOffset] &= ~(1 << bitOffset);
-   }
+   //    if (value)
+   //       buf[byteOffset] |=  (1 << bitOffset);
+   //    else
+   //       buf[byteOffset] &= ~(1 << bitOffset);
+   // }
 }
 
 void ensureMatching(char* bits, int bitsByteSize, std::vector<int>& v)
