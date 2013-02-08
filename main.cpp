@@ -63,57 +63,28 @@ void fillPhoneNumbers(std::vector<int>& v)
       v.push_back(arr[pick]);
       std::swap(arr[pick], arr[max]);
    }
-
-   // in-place initialization of sorted array
-   // only randomizes sequential values
-   // int arr[NUM_NUMBERS];
-   // arr[0] = 0;
-   // for (int i = 1; i < NUM_NUMBERS; ++i)
-   // {
-   //    int j = rand() % (i+1);
-   //    arr[i] = arr[j];
-   //    arr[j] = i;
-   // }
-   // v.reserve(NUM_NUMBERS);
-   // v.assign(arr, arr + NUM_NUMBERS);
 }
 
-// http://stackoverflow.com/a/2384119
 void setBitAt(char* buf, int bufByteSize, int bitPosition, bool value)
 {
+   assert(bitPosition>>3 < bufByteSize);
+
    if (value)
       buf[bitPosition>>3] |=  (1<<(bitPosition & 0x7));
    else
       buf[bitPosition>>3] &= ~(1<<(bitPosition & 0x7));
-   // if (bitPosition < SIZEOF_CHAR*8*bufByteSize)
-   // {
-   //    int byteOffset= bitPosition/8;
-   //    int bitOffset = bitPosition - byteOffset*8;
-
-   //    if (value)
-   //       buf[byteOffset] |=  (1 << bitOffset);
-   //    else
-   //       buf[byteOffset] &= ~(1 << bitOffset);
-   // }
 }
 
 void ensureMatching(char* bits, int bitsByteSize, std::vector<int>& v)
 {
+   assert((MAX_PHONE_NUM-1)>>3 < bitsByteSize);
+   
    std::vector<int> w;
    w.reserve(v.size());
 
-   for (int i=0; i<bitsByteSize; ++i)
-   {
-      char byte = bits[i];
-      for (int j=0; j<8*SIZEOF_CHAR && byte != 0; ++j)
-      {
-         if (byte & (1<<j))
-         {
-            int num = (8*SIZEOF_CHAR*i) + j;
-            w.push_back(num);
-         }
-      }
-   }
+   for (int i=0; i<MAX_PHONE_NUM; ++i)
+      if ((bits[i>>3] & (1<<(i & 0x7))) != 0)
+         w.push_back(i);
 
    if (w.size() != v.size())
       std::cout << "hmmm, your algorithm is not as good as you think..." << std::endl;
