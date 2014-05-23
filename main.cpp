@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <memory.h>
 
 static const int MAX_PHONE_NUM = 10000000; // 000-0000 to 999-9999
 static int NUM_NUMBERS = 10;
@@ -26,7 +27,7 @@ int main(int argc, char** argv)
       return 0;
 
    // initialize random seed
-   srand(time(NULL));
+   srand(unsigned int(time(NULL)));
 
    // create some random phone numbers
    std::vector<int> phoneNumbers;
@@ -34,16 +35,18 @@ int main(int argc, char** argv)
 
    // allocate enought bits for 1 per phone number
    size_t chars = MAX_PHONE_NUM/(SIZEOF_CHAR*8);
-   assert(chars > 0);
-   char bits[chars]; // one bit for each phone number
-   memset(&bits, 0, sizeof(bits));
+   char* bits = new char[chars]; // one bit for each phone number
+   memset(bits, 0, chars);
 
    // convert phone numbers to bits
-   for (int i=0; i<phoneNumbers.size(); ++i)
-      setBitAt(bits, sizeof(bits), phoneNumbers[i], true);
+   for (size_t i=0; i<phoneNumbers.size(); ++i)
+      setBitAt(bits, chars, phoneNumbers[i], true);
 
-   ensureMatching(bits, sizeof(bits), phoneNumbers);
+   ensureMatching(bits, chars, phoneNumbers);
 
+   // Wait
+   std::cin.ignore();
+   
    return 0;
 }
 
@@ -96,14 +99,14 @@ void ensureMatching(char* bits, int bitsByteSize, std::vector<int>& v)
 void printPhoneNumbers(const std::vector<int>& unsorted, const std::vector<int>& sorted)
 {
    std::cout << "Unsorted:" << std::endl;
-   for (int i=0; i<unsorted.size(); ++i)
+   for (size_t i=0; i<unsorted.size(); ++i)
    {
       std::cout << "\t" << unsorted.at(i) << std::endl;
    }
    std::cout << std::endl;
 
    std::cout << "Sorted:" << std::endl;
-   for (int i=0; i<sorted.size(); ++i)
+   for (size_t i=0; i<sorted.size(); ++i)
    {
       std::cout << "\t" << sorted.at(i) << std::endl;
    }
